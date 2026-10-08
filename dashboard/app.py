@@ -203,6 +203,30 @@ def render_stat(label: str, value: str):
     )
 
 
+def chart_title(text: str):
+    st.markdown(
+        f'<div class="chart-title">{escape(text)}</div>',
+        unsafe_allow_html=True,
+    )
+
+
+st.markdown(
+    """
+    <style>
+    .chart-title {
+        min-height: 3em;
+        margin: 0 0 0.5rem;
+        color: var(--text-color, #f0f2f6);
+        font-size: 1.06rem;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+
 # -----------------------------------------------------------------------------
 # Dashboard title / reader sentence
 # -----------------------------------------------------------------------------
@@ -347,7 +371,6 @@ with overview_tab:
         annotation_position="top left",
     )
     fig_hero.update_layout(
-        title="Average innings score changes across seasons — line chart, dashed line is the selected-period average",
         margin=dict(l=20, r=20, t=65, b=20),
         height=420,
     )
@@ -396,13 +419,15 @@ with overview_tab:
         annotation_position="top left",
     )
     fig_band.update_layout(
-        title="Chasing becomes less successful as the target rises — bar chart, reference = 50%",
         margin=dict(l=20, r=20, t=65, b=20),
         height=420,
     )
 
     hero_col, support_col = st.columns([2, 1])
     with hero_col:
+        chart_title(
+            "Average innings score changes across seasons — line chart, dashed line is the selected-period average"
+        )
         st.plotly_chart(fig_hero, use_container_width=True)
         st.caption(
             "n = "
@@ -411,6 +436,7 @@ with overview_tab:
             )
         )
     with support_col:
+        chart_title("Chasing becomes less successful as the target rises — bar chart, reference = 50%")
         st.plotly_chart(fig_band, use_container_width=True)
         st.caption(
             "n by target band = "
@@ -445,9 +471,12 @@ with overview_tab:
             x="season_year",
             y="sixes",
             labels={"season_year": "Season", "sixes": "Sixes"},
-            title="Sixes hit by season — showing how the scoring environment has changed",
         )
-        fig.update_layout(margin=dict(l=10, r=10, t=65, b=10), height=300)
+        fig.update_layout(
+            margin=dict(l=10, r=10, t=20, b=10),
+            height=300,
+        )
+        chart_title("Sixes hit by season — showing how the scoring environment has changed")
         st.plotly_chart(fig, use_container_width=True)
         st.caption(
             "n = "
@@ -479,9 +508,12 @@ with overview_tab:
             y="match_count",
             text="match_count",
             labels={"margin_type": "Winning method", "match_count": "Matches"},
-            title="Winning margins split between runs and wickets",
         )
-        fig.update_layout(margin=dict(l=10, r=10, t=65, b=10), height=300)
+        fig.update_layout(
+            margin=dict(l=10, r=10, t=20, b=10),
+            height=300,
+        )
+        chart_title("Winning margins split between runs and wickets")
         st.plotly_chart(fig, use_container_width=True)
         st.caption("n = decisive matches in the selected season(s)")
 
@@ -506,9 +538,12 @@ with overview_tab:
             color="toss_decision",
             barmode="stack",
             labels={"season_year": "Season", "match_count": "Matches", "toss_decision": "Toss choice"},
-            title="Toss winners increasingly choose to field — stacked count by season",
         )
-        fig.update_layout(margin=dict(l=10, r=10, t=65, b=10), height=300)
+        fig.update_layout(
+            margin=dict(l=10, r=10, t=20, b=10),
+            height=300,
+        )
+        chart_title("Toss winners increasingly choose to field — stacked count by season")
         st.plotly_chart(fig, use_container_width=True)
         st.caption("n = matches in the selected season(s)")
 
@@ -684,9 +719,11 @@ with match_tab:
         color="team",
         markers=True,
         labels={"over_number": "Over", "runs": "Runs in over", "team": "Batting team"},
-        title="The match turned over by over — runs per over for both innings",
     )
-    fig.update_layout(margin=dict(l=20, r=20, t=65, b=20), height=430)
+    fig.update_layout(
+        margin=dict(l=20, r=20, t=20, b=20),
+        height=430,
+    )
 
     # -------------------------------------------------------------------------
     # Visual 2 — fours and sixes
@@ -721,15 +758,19 @@ with match_tab:
         barmode="group",
         text="count",
         labels={"team": "Batting team", "count": "Boundaries", "boundary": "Type"},
-        title="Runs came from different boundary mixes — fours and sixes by innings",
     )
-    fig_boundaries.update_layout(margin=dict(l=20, r=20, t=65, b=20), height=430)
+    fig_boundaries.update_layout(
+        margin=dict(l=20, r=20, t=20, b=20),
+        height=430,
+    )
 
     hero_col, support_col = st.columns([2, 1])
     with hero_col:
+        chart_title("The match turned over by over — runs per over for both innings")
         st.plotly_chart(fig, use_container_width=True)
         st.caption(f"n = {len(runs_over)} innings-over observations across the selected match")
     with support_col:
+        chart_title("Runs came from different boundary mixes — fours and sixes by innings")
         st.plotly_chart(fig_boundaries, use_container_width=True)
         st.caption(
             "n = "
@@ -804,9 +845,12 @@ with match_tab:
             color="team",
             barmode="group",
             labels={"phase": "Innings phase", "runs": "Runs", "team": "Batting team"},
-            title="Where each innings scored its runs — phase split",
         )
-        fig_phase.update_layout(margin=dict(l=10, r=10, t=65, b=10), height=420)
+        fig_phase.update_layout(
+            margin=dict(l=10, r=10, t=20, b=10),
+            height=420,
+        )
+        chart_title("Where each innings scored its runs — phase split")
         st.plotly_chart(fig_phase, use_container_width=True)
         st.caption("n = legal balls shown in each phase in the selected match")
 
@@ -834,8 +878,12 @@ with match_tab:
             color="team",
             barmode="group",
             labels={"over_number": "Over", "wickets": "Credited wickets", "team": "Bowling context"},
-            title="Wickets came at these points in the match — by over",
         )
-        fig_wickets.update_layout(margin=dict(l=10, r=10, t=65, b=10), height=420)
+        fig_wickets.update_layout(
+            margin=dict(l=10, r=10, t=20, b=10),
+            height=420,
+            yaxis=dict(dtick=1, tickformat="d", rangemode="tozero"),
+        )
+        chart_title("Wickets came at these points in the match — by over")
         st.plotly_chart(fig_wickets, use_container_width=True)
         st.caption("n = overs in which at least one bowler-credited wicket fell")

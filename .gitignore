@@ -1,6 +1,6 @@
 data/raw/
 data/processed/
-*.db
+*.dbgit add .gitignore
 *.csv
 .venv/
 venv/
